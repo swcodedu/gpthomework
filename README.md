@@ -78,3 +78,34 @@ classDiagram
     Attendance o-- User : logs
     Attendance o-- Space : held at
 ```
+
+## sequence diagram
+``` mermaid
+sequenceDiagram
+    participant U as User
+    participant S as Space
+    participant R as Reservation
+    participant G as Group
+    participant M as Master
+
+    U->>S: checkAvailability()
+    S-->>U: availableSlots()
+    U->>R: makeReservation(startTime, endTime)
+    R->>S: reserveSpace(startTime, endTime)
+    S-->>R: confirmation()
+    R-->>U: reservationConfirmation()
+
+    Note over U,R: In case of modifications, user can only cancel & rebook
+    U->>R: viewReservations()
+    R-->>U: currentReservations()
+    U->>R: cancelReservation(id)
+    R-->>U: cancellationConfirmation()
+
+    U->>G: viewGroupSpaces()
+    G->>S: fetchSpaces()
+    S-->>U: groupSpaces()
+
+    G->>M: alertSpaceUsage()
+    M->>S: viewSpaceUsage()
+    S-->>M: currentUsageStats()
+```
