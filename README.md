@@ -68,6 +68,7 @@ classDiagram
 
 ## sequence diagram
 ``` mermaid
+@startuml
 actor User
 participant App
 database DB
@@ -76,4 +77,6 @@ User -> App: 로그인 요청
 App -> DB: 사용자 확인
 DB --> App: 사용자 정보 반환
 App --> User: 로그인 성공 메시지
+
+@enduml
 ```
