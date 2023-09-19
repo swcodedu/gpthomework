@@ -67,7 +67,7 @@ classDiagram
 ```
 
 ## sequence diagram
-``` sequence
+``` mermaid
 actor User
 participant App
 database DB
