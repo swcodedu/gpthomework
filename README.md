@@ -4,60 +4,77 @@
 ``` mermaid
 classDiagram
     class User {
-        +String email
-        +String password
-        +Boolean isAuthenticated
-        +viewSpaceInfo()
+        -id
+        -email
+        +register()
+        +leave()
+        +viewProfile()
+        +editProfile()
+        +viewReservations()
+    }
+
+    class Space {
+        -id
+        -type (e.g., Meeting Room, Parking Lot, Attendance)
+        +checkAvailability()
+    }
+
+    class Reservation {
+        -id
+        -startTime
+        -endTime
         +makeReservation()
         +cancelReservation()
     }
 
-    class Admin {
-        +createOrganization()
-        +modifyOrganization()
-        +deactivateOrganization()
-        +manageSpaceTemplate()
+    class Organization {
+        -id
+        +createOrg()
+        +viewOrgInfo()
+        +editOrgInfo()
+        +deactivateOrg()
     }
-    
+
+    class Group {
+        -id
+        +createGroup()
+        +viewGroupInfo()
+        +editGroupInfo()
+        +deactivateGroup()
+        +deleteGroup()
+        +moveSpaceToOtherGroup()
+    }
+
+    class Attendance {
+        -id
+        +markAttendance()
+        +viewAttendanceLog()
+    }
+
     class SuperAdmin {
+        +manageOrgTemplates()
+        +manageSpaceTypes()
+        +deactivateOrg()
     }
-    
+
     class Master {
-        +approveUser()
-        +denyUser()
-        +manageUserInGroup()
-        +manageSpaceInGroup()
-        +createSpaceInGroup()
-        +modifySpaceInfo()
-        +blockSpaceForTime()
+        +manageGroups()
+        +manageUsers()
+        +manageSpaces()
+        +blockSpaceUsage()
+        +approveJoinRequests()
+        +releaseUserFromOrg()
+        +moveUserToDifferentGroup()
         +viewSpaceUsage()
-        +viewAttendance()
-    }
-    
-    class Space {
-        +DateTime startTime
-        +DateTime endTime
-        +String type
-        +setAvailableTime()
     }
 
-    class MeetingRoomSpace {
-        +setHourlyAvailableTime()
-    }
-
-    class ParkingSpace {
-        +set10MinAvailableTime()
-    }
-
-    class AttendanceSpace {
-        +registerAttendanceList()
-        +modifyAttendanceList()
-    }
-
-    User --|> AuthenticatedUser : Inherits
-    Admin --|> SuperAdmin : Inherits
-    Admin --|> Master : Inherits
-    Space --|> MeetingRoomSpace : Inherits
-    Space --|> ParkingSpace : Inherits
-    Space --|> AttendanceSpace : Inherits
+    User "1"--o"*" Reservation : makes
+    User "1"--o"*" Group : belongs to
+    Space "1"o--"*" Reservation : has
+    Space "1"--o"*" Group : managed by
+    Group "1"--o"*" Organization : part of
+    Organization "1"o--"*" SuperAdmin : managed by
+    Group "1"o--"*" Master : managed by
+    Attendance o-- User : logs
+    Attendance o-- Space : held at
 ```
