@@ -2,7 +2,6 @@
 
 ## class diagram
 ``` mermaid
-classDiagram
     class User {
         +id: UUID
         +email: String
