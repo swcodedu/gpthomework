@@ -3,80 +3,68 @@
 ## class diagram
 ``` mermaid
 classDiagram
-  class User {
-    + email: string
-    + register()
-    + login()
-    + viewProfile()
-    + editProfile()
-    + viewReservationStatus()
-    + makeReservation()
-    + cancelReservation()
-  }
+    class User {
+        +id: UUID
+        +email: String
+        +isAuthenticated: Boolean
+        +personalInfo: String
+        +bookings: Booking[]
+    }
+    class Booking {
+        +id: UUID
+        +spaceId: UUID
+        +startTime: DateTime
+        +endTime: DateTime
+    }
+    class Organization {
+        +id: UUID
+        +info: String
+        +isActive: Boolean
+    }
+    class Space {
+        +id: UUID
+        +type: SpaceType
+        +availabilityStart: Time
+        +availabilityEnd: Time
+    }
+    class Group {
+        +id: UUID
+        +info: String
+        +members: User[]
+        +spaces: Space[]
+    }
+    class Admin {
+        +id: UUID
+        +type: AdminType
+    }
+    class Attendance {
+        +id: UUID
+        +attendanceDate: Date
+        +attendanceType: AttendanceType
+        +userId: UUID
+    }
+    enum SpaceType {
+        MEETING_ROOM
+        PARKING_LOT
+        ATTENDANCE_LIST
+    }
+    enum AdminType {
+        SUPER_ADMIN
+        MASTER
+    }
+    enum AttendanceType {
+        PRESENT
+        ABSENT
+        LATE
+        LEFT_EARLY
+    }
 
-  class Admin {
-    + manageOrganization()
-    + manageGroups()
-    + manageSpaces()
-  }
-
-  class SuperAdmin {
-    + createOrganization()
-    + manageOrganization()
-    + manageGroups()
-    + manageSpaces()
-  }
-
-  class Master {
-    + manageGroups()
-    + manageUsers()
-    + manageSpaces()
-    + manageAttendance()
-  }
-
-  class Space {
-    + type: string
-    + createSpace()
-    + manageSpace()
-    + viewAvailability()
-    + blockTimeSlot()
-    + viewAttendance()
-    + viewAttendanceHistory()
-  }
-
-  class Organization {
-    + createGroup()
-    + manageGroups()
-    + manageSpaces()
-  }
-
-  User --|> SuperAdmin : Inherits
-  User --|> Admin : Inherits
-  User --|> Master : Inherits
-  Admin --|> Organization : Manages
-  SuperAdmin --|> Organization : Manages
-  Master --|> Organization : Manages
-  Master --|> Space : Manages
-  Space --|> Organization : Belongs to
-  Admin --|> Space : Manages
-  SuperAdmin --|> Space : Manages
-  Master --|> User : Manages
-  Organization --|> Group : Contains
-  Organization --|> Space : Manages
-  Group --|> User : Contains
-```
-
-## sequence diagram
-``` mermaid
-@startuml
-actor User
-participant App
-database DB
-
-User -> App: 로그인 요청
-App -> DB: 사용자 확인
-DB --> App: 사용자 정보 반환
-App --> User: 로그인 성공 메시지
-
-@enduml
+    User "1" --> "*" Booking : makes
+    Organization "1" --> "*" Group : has
+    Group "1" --> "*" User : contains
+    Group "1" --> "*" Space : manages
+    Admin "1" --> "*" Organization : manages (for Super Admin)
+    Admin "1" --> "*" Group : manages (for Master)
+    Space "1" --> "*" Attendance : tracks
+    User "1" --> "*" Attendance : isFor
 ```
